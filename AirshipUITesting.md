@@ -1,14 +1,10 @@
 # UI Testing at Urban Airship
-_A series of posts about our approach to creating a UI that’s simple, straightforward and testable_
 
 By Andrew Winterman
 
-
 As consumer expectations of web interfaces grow, more of the logic making the website go needs to move to the front end. In other words, code is sent to the customer. 
 
-
 As the customer interacts with the page, the code executes, providing near instantaneous feedback, and smoother interactions with the product. 
-
 
 For example, rather than wait for form validation (e.g. checking proper formatting of an email address or phone number), the validation code can execute as soon as the user makes a change.  
 
@@ -362,7 +358,7 @@ In some cases, it wasn’t possible to update production code to satisfy the abo
 
 _By Nate Wittstock_
 
-In previous posts we discussed our transition from drive.js to tape; these posts covered the transition between test runners, how we replaced built-in mocking functionalities that drive.js provided, and the implications for how our tests and modules were written. At this point, the state of our world was:
+Above, we discussed our transition from drive.js to tape; these posts covered the transition between test runners, how we replaced built-in mocking functionalities that drive.js provided, and the implications for how our tests and modules were written. At this point, the state of our world was:
 
 * tape as our test harness
 * sinon for xhr mocking
