@@ -122,7 +122,9 @@ There are now better solutions available to use. Drive.js solved a hard problem 
 * Modular: The pieces should be well defined, comprehensible, and isolated from one another.
 * Established: There should be a strong community of users who are facing the same problems we are.
 * Communicative: It should say what it is doing clearly. Developers should never have to binary search through the code under test.
+
 Pieces to the problems:
+
 * Test Harness
 * Test Runner
 * Mock XHRs
@@ -188,6 +190,7 @@ Our actual usage eschews drive's functionality as a test driver — we almost al
 — nobody uses jsdom to browse the internet. Bugs we find via running tests there may or may not exist in real browsers.
 
 #### jsdom-eval
+
 This is a ~80 line module that Michael Hayes wrote and maintains. It has a very simple API — you can specify a js file and/or an html file, and it will set up a jsdom environment with the html, and run your js. The only trickery it engages in is to support source-mapped stack traces, but as of version 0.0.8, it falls back to regular stack traces if the sourcemap fails to satisfy expectations.
 jsdom-eval only ever runs tests in jsdom.
 
@@ -221,22 +224,27 @@ In order to satisfy the expectations of a module, we may have to provide the pro
 Drive actually makes network requests. It sets up a node http server to service them. The user can supply responses via the endpoints function, which takes as its argument a mapping between relative urls and node request handlers. However you cannot require inside the request handlers, and they are pulled out of the enclosing file to be executed on the server, so you also cannot refer to variables from enclosing scope. This means mocking out complicated or large responses is unwieldy, and that it is impossible to reuse code between mock responses.
 
 Drive can support arbitrary urls via endpoint rewriting.
-jsdom doesn't actually support the full range of XMLHttpRequests. It relies on a node module, npm.im/XMLHttpRequest wich attempts to implement the spec on top of node. This module is not the best. It doesn't support any HTTP verb apart from GET. It throws strings when it encounters an error, which means that the error has no stack trace. The project is not maintained — the version of the module on npm does not match any version tag in the public github repository. It has a huge number of open issues and prs, none of which have comments from the original maintainers, so it doesn't seem as though it will get better any time soon.
+
+jsdom doesn't actually support the full range of `XMLHttpRequests`. It relies on a node module, npm.im/XMLHttpRequest wich attempts to implement the spec on top of node. This module is not the best. It doesn't support any HTTP verb apart from GET. It throws strings when it encounters an error, which means that the error has no stack trace. The project is not maintained — the version of the module on npm does not match any version tag in the public github repository. It has a huge number of open issues and prs, none of which have comments from the original maintainers, so it doesn't seem as though it will get better any time soon.
 
 #### sinon
 
 sinon is the only alternative I've explored so far for mocking network interaction, because it's really very good.
-It mocks network interaction via a fakeServer and overriding the window.XMLHttpRequest object with a mock. The mock is really very good — it seems to support every case I've tried so far.
+It mocks network interaction via a fakeServer and overriding the `window.XMLHttpRequest` object with a mock. The mock is really very good — it seems to support every case I've tried so far.
+
 Your register listeners for certain routes via the fakeServer respondWith method. respondWith is overloaded. It can take:
+
 * an array of status code, headers, response body
 * a url and an array of status code, headers, response body
 * a http parameter and an array of status code, headers, response body
 * a function that takes the XMLHttpRequest object as its parameter. The XHR object also has a .respond method, which you can use to specify the status code, headers and response body. This function CANNOT be asynchronous, however a mechanism for asynchronous responses is available on the server itself.
 * a url and a function as described in the preceding bullet.
 * a http parameter, a url, and a function as described in the preceding bullet.
+
 Once you've issued requests, you can queue the server to respond to all the requests it's received via a server.respond method. This is a little clunky, but so far it's been sufficient even for relatively complex tasks. Some code may require minor rewrites in order to be testable under this pattern, e.g. code that involves chained requests that follow next-page headers until they have retrieved all the data.
 
 I'm pretty happy with this solution. The community of use is large, and the code base is under active development. The velocity of development is reasonable — they seem to merge changes every two weeks, and have a roadmap for 2.0.0 that seems appropriate to me. The code base is not the most readable ever, but it's not so bad as to dissuade me from using it.
+
 Using the fake server and mock XMLHttpRequest require setup and teardown — we need to override the XMLHttpRequest object with the sinon mock, instantiate the server, and register routes during setup for each test, and we need to wipe the registered routes, and restore the xml object during teardown.
 
 ### Sanitary DOM usage
@@ -363,7 +371,9 @@ Above, we discussed our transition from drive.js to tape; these posts covered th
 * tape as our test harness
 * sinon for xhr mocking
 * proxyquireify for dependent module mocking
+
 When we started this process, our goals were to:
+
 * Replace NIH ("not invented here") components in our testing stack
 * Ease of replacing and upgrading components related to testing and deployment
 * Ability to use multiple testing environments without code changes
@@ -410,7 +420,7 @@ Lets go over the commands we use, one at a time:
 
 When we develop locally, we have several systems running on our local machines (see the blog post our frock-blog, one of our open sourced development tools, for further details). We serve our bundle using a fantastic tool called `budo`:
 
-```
+```bash
 budo ./scripts/load-bundle.js:bundle.min.js --verbose --port 8008 -- --debug
 ```
 
@@ -422,7 +432,7 @@ Prior to using budo, we were using [beefy][]; a similar tool, but with some draw
 
 When we actually build our production application, our build process is very straightforward:
 
-```
+```bash
 browserify --debug --entry ./scripts/load-bundle.js | exorcist dist/bundle.map > dist/bundle.js
 ```
 
@@ -493,7 +503,7 @@ During his downtime, one of my teammates performed the arduous task of getting 1
 
 When it came time to make the switch, we turned this:
 
-```sh
+```bash
 node scripts/get-browserify-test-args.js $ARGS |
  xargs browserify --debug --full-paths --plugin=proxyquireify/plugin |
  jsdom --html tests/scaffold.html |
@@ -502,7 +512,7 @@ node scripts/get-browserify-test-args.js $ARGS |
 
 Into this:
 
-```sh
+```bash
 node scripts/get-browserify-test-args.js $ARGS |
  xargs browserify --debug --full-paths --plugin=proxyquireify/plugin |
  ghostface --timeout 5000 --html tests/scaffold.html |
