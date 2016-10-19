@@ -534,3 +534,20 @@ But the world now is very different from a few years ago; there are now many too
 * We've had pipes in the Unix command line forever; it's an easy selection as a common interface, and you don't have to maintain it.
 * Write code that is isolated and cleans up after itself, even in the browser. While it may seem like running all of your tests in the same environment is a flaw, running in a shared environment is exactly what your browser code will be doing. Every single page, widget, etc. that we write today has the ability to tear down and leave the browser environment exactly as it started.
 * Avoid global behaviors in your frontend code: not only are they difficult to test, but they're difficult to reason about—their interactions with other code you write may have surprising results!
+
+[browserify]: http://browserify.org/
+[jsdom]: https://www.npmjs.com/package/jsdom
+[frock-blog]: https://www.urbanairship.com/blog/introducing-frock-easy-fake-services-for-a-microservices-environment
+[budo]: https://www.npmjs.com/package/budo
+[exorcist]: https://www.npmjs.com/package/exorcist
+[ghostface]: https://www.npmjs.com/package/ghostface
+[PhantomJS]: http://phantomjs.org/
+[tap-set-exit]: https://www.npmjs.com/package/tap-set-exit
+[hack-weeks]: https://www.urbanairship.com/blog/hack-week-at-urban-airship
+[smokestack]: https://www.npmjs.com/package/smokestack
+[tape]: https://www.npmjs.com/package/tape
+[sinon]: https://www.npmjs.com/package/sinon
+[proxyquireify]: https://www.npmjs.com/package/proxyquireify
+[TAP]: https://testanything.org/
+[beefy]: https://www.npmjs.com/package/beefy
+[jsdom-eval]: https://www.npmjs.com/package/jsdom-eval
