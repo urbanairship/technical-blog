@@ -65,8 +65,9 @@ Because changing testing solutions is difficult, It was very important to me to 
 
 Any technology choice can be  a trap. Change is expensive and carries risk—both because technologies don’t always fulfill up their promises, and because the transition can be error prone. 
 
-Moreover, In the event of an error or an audit of how we spent engineering resources, we need to be able to point to our reasoning so that we can put our new world in the context of where we came from. 
-Motivate Change: Identify Technological Risks and Benefits with Pre-Development Reviews
+Moreover, In the event of an error or an audit of how we spent engineering resources, we need to be able to point to our reasoning. We need to be able put our new world in the context of where we came from. 
+
+### Motivate Change: Identify Technological Risks and Benefits with Pre-Development Reviews
 
 We’ve been using a "pre-development review" process — a concept borrowed from the construction industry to solicit stakeholder input before they break ground — to screen proposals for problems and to involve the whole team in the decision-making processes. Senior engineers can weigh in with their experience; junior engineers can learn about our motivations and standards. 
 
