@@ -358,10 +358,12 @@ We updated these modules to export a function. No execution happens until the fu
 ### Solutions:
 
 Essentially, writing modules to be testable boiled down to the following:
+
 * Modules should export a function which defines all of their behavior.
 * If it needs to accomplish any asynchronous task, the return value of the function should emit an event or call a callback when it has finished any asynchronous tasks.
 * If a module manipulates the DOM, either by adding event listeners or dom elements, it should also define how to clean up after itself.
-In some cases, it wasn’t possible to update production code to satisfy the above criteria. When that happened, we mocked the offending modules with proxyquireify when testing any of its dependents.
+
+In some cases, it wasn’t possible to update production code to satisfy the above criteria. When that happened, we mocked the offending modules with npm.im/proxyquireify when testing any of its dependents.
 
 
 # UI Testing at Urban Airship: Further Improvements
