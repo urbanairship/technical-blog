@@ -295,6 +295,7 @@ This problem is very specific to our use case, and I think is best accomplished 
 ### Conclusion
 
 This proposal boils down to the following constellation of tools:
+
 1. test harness: tape
 2. keeping the test environment pristine: convention and manual clean up after test completion.
 3. sanitary DOM usage: dom-sandbox
