@@ -547,3 +547,5 @@ But the world now is very different from a few years ago; there are now many too
 [sinon]: https://www.npmjs.com/package/sinon
 [proxyquireify]: https://www.npmjs.com/package/proxyquireify
 [TAP]: https://testanything.org/
+[beefy]: https://www.npmjs.com/package/beefy
+[jsdom-eval]: https://www.npmjs.com/package/jsdom-eval
