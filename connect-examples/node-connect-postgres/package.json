@@ -1,0 +1,23 @@
+{
+  "name": "connect-postgres",
+  "version": "1.0.0",
+  "description": "example connect integration which puts urban airship data into postgres",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: there are no tests\" && exit 1",
+    "user": "createuser -h $PGHOST -p $PGPORT -D -R urban_airship_connect",
+    "schema": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER --file schema.sql",
+    "connect": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER",
+    "start": "node index.js"
+  },
+  "author": "Urban Airship",
+  "license": "MIT",
+  "dependencies": {
+    "dotpath-stream": "^2.0.1",
+    "pg": "^6.1.5",
+    "pino": "^4.3.0",
+    "through2": "^2.0.3",
+    "urban-airship-connect": "^1.1.0",
+    "xtend": "^4.0.1"
+  }
+}
