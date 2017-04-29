@@ -1,9 +1,10 @@
 var connect = require('urban-airship-connect')
 var postgres = require('./postgres')
 var xtend = require('xtend')
+var pino = require('pino')({level: 'debug'})
 
 process.on('unhandledRejection', function(e) {
-    console.error(e.message, e.stack)
+    pino.error('unhandled rejection', e.message, e.stack)
     process.exit(1)
 })
 
@@ -11,7 +12,7 @@ var app = process.env.UA_APP_KEY
 var token = process.env.UA_CONNECT_TOKEN
 
 if (!app || !token) {
-  console.error("requier app and token got", app, token)
+  pino.error({message: "requier app and token got", app: app, token: token})
   process.exit(1)
 }
 
@@ -25,23 +26,22 @@ var config = {
   host: process.env.PGHOST,
   port: process.env.PGPORT,
   query: process.env.UA_CONNECT_QUERY || {start: "EARLIEST"}, 
-  offsetCommitInterval: 1000 * 60 // every minute
+  offsetCommitInterval: 1000 * 1
 }
 
-console.log(xtend(config, {password: 'redacted'}))
+pino.info({'config': xtend(config, {password: 'redacted'})})
 
-
-var postgresStream = postgres(app, config, function (err, streams) { 
+var postgresStream = postgres(app, config, function (err, pg) { 
   if (err) {
     throw err
   }
 
-  streams.start()
-    .pipe(connectStream)
-    .pipe(streams.connectData())
+  connectStream
+    .pipe(pg.connectData())
+    .pipe(pg.offset())
 
-
-  connectStream.pipe(streams.offset())
+  pino.info({message: "starting query", query: pg.query, app: app})
+  connectStream.write(pg.query)
 })
 
 

@@ -2,8 +2,9 @@ DROP TABLE IF EXISTS apps;
 DROP TABLE IF EXISTS events;
 
 CREATE TABLE events(
-        app   varchar(22)       NOT NULL,
-        event jsonb             NOT NULL
+        app     varchar(22)       NOT NULL,
+        event   jsonb             NOT NULL,
+        id      uuid              UNIQUE NOT NULL
 );
 
 CREATE TABLE apps(

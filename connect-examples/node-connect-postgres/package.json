@@ -8,7 +8,7 @@
     "user": "createuser -h $PGHOST -p $PGPORT -D -R urban_airship_connect",
     "schema": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER --file schema.sql",
     "connect": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER",
-    "start": "node index.js"
+    "start": "node index.js | pino"
   },
   "author": "Urban Airship",
   "license": "MIT",
