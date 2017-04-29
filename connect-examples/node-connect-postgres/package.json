@@ -13,7 +13,6 @@
   "author": "Urban Airship",
   "license": "MIT",
   "dependencies": {
-    "dotpath-stream": "^2.0.1",
     "pg": "^6.1.5",
     "pino": "^4.3.0",
     "through2": "^2.0.3",
