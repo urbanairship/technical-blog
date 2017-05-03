@@ -13,6 +13,7 @@
   "author": "Urban Airship",
   "license": "MIT",
   "dependencies": {
+    "concat-stream": "^1.6.0",
     "pg": "^6.1.5",
     "pino": "^4.3.0",
     "through2": "^2.0.3",
