@@ -1,13 +1,19 @@
 # node connect postgres
 
-An example of getting connect data into postgres. Probably not suitable for a
-big ol' app cause it doesn't do any sort of batching.
+An example of getting connect data into postgres, and of one possible analytics
+application built on top of the tables that result. It's probably not suitable
+for a big production app because it inserts individual events into postgres as
+it receives them.
 
 I tested it with an AWS RDS PostgreSQL instance of the `db.t2.micro` class. 
 
 ## Configuration, installation and running
 
-It's a node project, so from this directory, run `npm i` to install its
+It's a node project, so install node either via whatever package manager you like, 
+or by choosing the appropriate installer from the 
+[node organization web site](https://nodejs.org/en/download/)
+
+Once you have node installed, run `npm i` in this directory to install its
 dependencies. Once these are installed, and assuming you have the PostgreSQL
 client installed, you can create the schema and required users with:
 
@@ -31,3 +37,6 @@ npm start
 
 I've included a convenience npm script for connecting to the postgres instance
 configured with your environment variables; namely `npm run connect`
+
+
+
