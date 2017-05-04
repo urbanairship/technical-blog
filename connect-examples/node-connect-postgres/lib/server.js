@@ -91,7 +91,13 @@ function formatEvents(query) {
   var stream = through(transform)
   return stream
   function transform(chunk, enc, cb) {
-    this.push(xtend(query, {events: chunk.map(function(d) { return d.event})}))
+    this.push(xtend(query, {events: chunk.map(row => {
+      var message = row.message
+      if (message.body && message.body.payload) {
+        message.body.payload = JSON.parse(new Buffer(message.body.payload, 'base64').toString())
+      }
+      return message
+    })}))
       cb()
 
   }

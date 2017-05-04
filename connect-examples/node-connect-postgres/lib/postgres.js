@@ -48,6 +48,8 @@ module.exports.reading = function (app, config, ready) {
       pino.info("got query", chunk)
       var insert = {}
       insert[chunk.key] = chunk.value
+
+      var getEventsForChannelSql = fs.readFileSync('./lib/getEventsForChannel.sql').toString()
       pool.query(getEventsForChannelSql, 
           [
             JSON.stringify({device: insert}),
@@ -113,7 +115,7 @@ function pgStream (app, config, ready) {
     return stream
 
     function transform (event, encoding, cb) {
-      pool.query(insertSql, [app, JSON.stringify(event), event.id, +(new Date(event.occurred))])
+      pool.query(insertSql, [app, JSON.stringify(event), event.id])
         .then(function (res) {
           pino.debug({'message': 'insert data', 'pg response': res, event: event})
           if (!res.rows.length) {

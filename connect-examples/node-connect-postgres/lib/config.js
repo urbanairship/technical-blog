@@ -15,8 +15,8 @@ module.exports = {
     port: process.env.PGPORT,
       // these last tow are connect configs, but we care about them in the
       // postgres module.
-    query: process.env.UA_CONNECT_QUERY || {start: "EARLIEST"}, 
-    offsetCommitInterval: 1000 * 1
+    query: JSON.parse(process.env.UA_CONNECT_QUERY) || {start: "EARLIEST"}, 
+    offsetCommitInterval: 1000 * 60
   }
 }
 
