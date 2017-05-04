@@ -13,61 +13,12 @@ var getEventsForChannelSql = fs.readFileSync('./lib/getEventsForChannel.sql').to
 
 module.exports = pgStream
 
-module.exports.reading = function (app, config, ready) {
-  var pool = new pg.Pool(config)
-  setImmediate(function() {
-    ready(null, {users: getIds, events: getEvents})
-  })
-
-  function getIds() {
-    var stream = through(query)
-
-    return stream
-    /**
-     * Stream from {limit: number, offset: number, key: {<some key on the device
-     * object>}} to identifiers for the given query. Each identifier list
-     * returned also has the query information on it.
-     */
-    function query(chunk, enc, cb) {
-      pool.query(getIdsSql, ['{device, ' + chunk.key + '}', app, chunk.limit || 100, chunk.offset || 0])
-        .then(function (res) {
-          stream.push(res.rows || [])
-          cb()
-        }).catch(function(e) {
-          stream.emit('error', {message: e.message, stack: e.stack, e})
-        })
-    }
-  }
-
-  function getEvents() {
-    var stream = through(query)
-
-    return stream
-
-    function query(chunk, enc, cb) {
-      pino.info("got query", chunk)
-      var insert = {}
-      insert[chunk.key] = chunk.value
-
-      var getEventsForChannelSql = fs.readFileSync('./lib/getEventsForChannel.sql').toString()
-      pool.query(getEventsForChannelSql, 
-          [
-            JSON.stringify({device: insert}),
-            app,
-            chunk.limit,
-            chunk.offset
-          ])
-        .then(function (res) {
-          stream.push(res.rows || [])
-          cb()
-        })
-      .catch(function(e) {
-          stream.emit('error', {message: e.message, stack: e.stack, e})
-        })
-    }
-  }
-}
-
+/**
+ * Defines the write paths into postgres.
+ *
+ * Loads a previously saved offset which it returns on the response object
+ * before it makes write streams avialable.
+ */
 function pgStream (app, config, ready) {
   var pool = new pg.Pool(config)
 
@@ -150,5 +101,63 @@ function pgStream (app, config, ready) {
   }
 }
 
+/**
+ * Defines the read paths against postgres. 
+ *
+ * Uses a callback to match the signature of the function assigned to module.exports
+ **/
+module.exports.reading = function (app, config, ready) {
+  var pool = new pg.Pool(config)
+  setImmediate(function() {
+    ready(null, {users: getIds, events: getEvents})
+  })
+
+  function getIds() {
+    var stream = through(query)
+
+    return stream
+    /**
+     * Stream from {limit: number, offset: number, key: {<some key on the device
+     * object>}} to identifiers for the given query. Each identifier list
+     * returned also has the query information on it.
+     */
+    function query(chunk, enc, cb) {
+      pool.query(getIdsSql, ['{device, ' + chunk.key + '}', app, chunk.limit || 100, chunk.offset || 0])
+        .then(function (res) {
+          stream.push(res.rows || [])
+          cb()
+        }).catch(function(e) {
+          stream.emit('error', {message: e.message, stack: e.stack, e})
+        })
+    }
+  }
+
+  function getEvents() {
+    var stream = through(query)
+
+    return stream
+
+    function query(chunk, enc, cb) {
+      pino.info("got query", chunk)
+      var insert = {}
+      insert[chunk.key] = chunk.value
+
+      pool.query(getEventsForChannelSql, 
+          [
+            JSON.stringify({device: insert}),
+            app,
+            chunk.limit,
+            chunk.offset
+          ])
+        .then(function (res) {
+          stream.push(res.rows || [])
+          cb()
+        })
+      .catch(function(e) {
+          stream.emit('error', {message: e.message, stack: e.stack, e})
+        })
+    }
+  }
+}
 
 

@@ -10,6 +10,10 @@ var CONTENT_TYPE = {'Content-Type': 'application/json'}
 
 var pino = require('pino')({level: 'info'})
 
+/**
+ * Exports function which creates an http server which exposes HTTP endpoints
+ * for a user timeline. Uses ./postgres to fulfill requests.
+ */
 module.exports = function(config, ready) {
   postgres(config.connect.app, config.postgres, onPostgresConnection, ready)
 }
