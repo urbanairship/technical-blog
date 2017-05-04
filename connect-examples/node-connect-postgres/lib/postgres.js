@@ -122,7 +122,7 @@ module.exports.reading = function (app, config, ready) {
      * returned also has the query information on it.
      */
     function query(chunk, enc, cb) {
-      pool.query(getIdsSql, ['{device, ' + chunk.key + '}', app, chunk.limit || 100, chunk.offset || 0])
+      pool.query(getIdsSql, ['{device, ' + chunk.key + '}', app, chunk.limit || 20, chunk.offset || 0])
         .then(function (res) {
           stream.push(res.rows || [])
           cb()
