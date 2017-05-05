@@ -28,7 +28,7 @@ WITH RECURSIVE E AS (
                 COALESCE(A.event->'body'->'last_delivered'->>'push_id', A.event->'body'->'last_delivered'->>'group_id') as precedes,
                 COALESCE(A.event->'body'->'triggering_push'->>'push_id', A.event->'body'->'triggering_push'->>'group_id') as triggers,
                 COALESCE(A.event->'body'->'replacing_push'->>'push_id', A.event->'body'->'replacing_push'->>'group_id') as replaces,
-                NULL,
+                NULL
         FROM events as A WHERE (
                 A.event@>$1 AND 
                 app = $2  AND 
@@ -49,7 +49,7 @@ WITH RECURSIVE E AS (
                         NULL, -- no precedes
                         NULL, -- no triggers
                         NULL, -- no replaces
-                        COALESCE(B.event->'body'->>'group_id', B.event->'body'->>'push_id') AS defines,
+                        COALESCE(B.event->'body'->>'group_id', B.event->'body'->>'push_id') AS defines
                 FROM E, events as B WHERE (
                         B.event@>'{"type": "PUSH_BODY"}' AND
                         (

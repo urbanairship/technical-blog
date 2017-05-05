@@ -22,7 +22,7 @@ module.exports = pgStream
 function pgStream (app, config, ready) {
   var pool = new pg.Pool(config)
 
-  var FIRST_TIME =  {
+  var FIRST_TIME = {
     // total hack-- set the pk of the row to the pk we used to look it up, just
     // so we get data for the row back. The resume offset will be zero if there
     // was nothing there.
@@ -31,12 +31,10 @@ function pgStream (app, config, ready) {
     name: 'seed-app-and-get-offsets'
   }
 
-
-  var UPDATE =  {
+  var UPDATE = {
     text: 'INSERT INTO apps(app, stream_offset) VALUES ($1, $2) ON CONFLICT (app) DO UPDATE SET stream_offset=$2 RETURNING (stream_offset)',
     name: 'update-and-get-offsets'
   }
-
 
   pool.query(FIRST_TIME)
     .then(function (res) {
@@ -48,7 +46,7 @@ function pgStream (app, config, ready) {
       if (resume) {
         query.resume_offset = resume
         delete query.start
-      } 
+      }
 
       ready(null, {
         offset: offsetStream,
@@ -58,8 +56,8 @@ function pgStream (app, config, ready) {
     })
     .catch(ready)
 
-  function connectData() {
-    var now = new Date();
+  function connectData () {
+    var now = new Date()
 
     var stream = through(transform)
 
@@ -72,25 +70,24 @@ function pgStream (app, config, ready) {
           if (!res.rows.length) {
             pino.debug({message: 'attempted to insert already existing data did nothing', id: event.id, app: app})
             cb()
-            return false;
+            return false
           }
 
           if (new Date() - now > config.offsetCommitInterval) {
             stream.push(event.offset)
-            now = new Date();
+            now = new Date()
           }
           cb()
-          return true;
+          return true
         })
         .catch(ready)
     }
   }
 
+  function offsetStream () {
+    return through(transform)
 
-  function offsetStream() {
-    return through(transform) 
-
-    function transform(offset, encoding, cb) {
+    function transform (offset, encoding, cb) {
       var update = xtend(UPDATE, {values: [app, offset]})
       pool.query(update)
         .then(function (res) {
@@ -102,17 +99,17 @@ function pgStream (app, config, ready) {
 }
 
 /**
- * Defines the read paths against postgres. 
+ * Defines the read paths against postgres.
  *
  * Uses a callback to match the signature of the function assigned to module.exports
  **/
 module.exports.reading = function (app, config, ready) {
   var pool = new pg.Pool(config)
-  setImmediate(function() {
+  setImmediate(function () {
     ready(null, {users: getIds, events: getEvents})
   })
 
-  function getIds() {
+  function getIds () {
     var stream = through(query)
 
     return stream
@@ -121,43 +118,41 @@ module.exports.reading = function (app, config, ready) {
      * object>}} to identifiers for the given query. Each identifier list
      * returned also has the query information on it.
      */
-    function query(chunk, enc, cb) {
+    function query (chunk, enc, cb) {
       pool.query(getIdsSql, ['{device, ' + chunk.key + '}', app, chunk.limit || 20, chunk.offset || 0])
         .then(function (res) {
           stream.push(res.rows || [])
           cb()
-        }).catch(function(e) {
+        }).catch(function (e) {
           stream.emit('error', {message: e.message, stack: e.stack, e})
         })
     }
   }
 
-  function getEvents() {
+  function getEvents () {
     var stream = through(query)
 
     return stream
 
-    function query(chunk, enc, cb) {
-      pino.info("got query", chunk)
+    function query (chunk, enc, cb) {
+      pino.info('got query', chunk)
       var insert = {}
       insert[chunk.key] = chunk.value
 
-      pool.query(getEventsForChannelSql, 
-          [
-            JSON.stringify({device: insert}),
-            app,
-            chunk.limit,
-            chunk.offset
-          ])
+      pool.query(getEventsForChannelSql,
+        [
+          JSON.stringify({device: insert}),
+          app,
+          chunk.limit,
+          chunk.offset
+        ])
         .then(function (res) {
           stream.push(res.rows || [])
           cb()
         })
-      .catch(function(e) {
+        .catch(function (e) {
           stream.emit('error', {message: e.message, stack: e.stack, e})
         })
     }
   }
 }
-
-
