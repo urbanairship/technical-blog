@@ -9,12 +9,12 @@ I tested it with an AWS RDS PostgreSQL instance of the `db.t2.micro` class.
 
 If you're reading the code, I recommend starting with [./schema.sql][], which
 defines the tables we expect to be in PostgreSQL, and then moving on to 
-[./index.js][], which is the entry point for the project. `npm start` essentiall
-runs `node index.js`.
+[./index.js][], which is the entry point for the project. `npm start`
+essentially runs `node index.js`.
 
 ## Configuration, installation and running
 
-It's a node project, so install node either via whatever package manager you like, 
+It's a node project, so install node either via your preferred package manager, 
 or by choosing the appropriate installer from the 
 [node organization web site](https://nodejs.org/en/download/)
 
@@ -48,7 +48,7 @@ configured with your environment variables; namely `npm run connect`
 Running `npm start` also starts an HTTP service which provides a JSON REST API
 for a pair of particular queries against this postgres database. 
 
-> NB: It's clearly sub-optimal to have the read and write services both running
+> NB: It's sub-optimal to have the read and write services both running
 > in the same thread, but since this is intended for demo/hey-that's-kinda-neat
 > purposes, I chose the simpler path. 
 
