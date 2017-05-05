@@ -7,10 +7,10 @@ it receives them.
 
 I tested it with an AWS RDS PostgreSQL instance of the `db.t2.micro` class. 
 
-If you're reading the code, I recommend starting with [./schema.sql][], which
-defines the tables we expect to be in PostgreSQL, and then moving on to 
-[./index.js][], which is the entry point for the project. `npm start`
-essentially runs `node index.js`.
+If you're reading the code, I recommend starting with
+[./schema.sql](./schema.sql), which defines the tables we expect to be in
+PostgreSQL, and then moving on to [./index.js](./index.js), which is the entry
+point for the project. `npm start` essentially runs `node index.js`.
 
 ## Configuration, installation and running
 
