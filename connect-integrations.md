@@ -120,9 +120,6 @@ distinguish whether the exception is our fault, in which case somebody needs to 
 woken up, due to customer misconfiguration, in which case we need to tell them about, 
 a transitory network error, or a third party falling on their face.
 
-> To some extent putting exceptions in a dynamo table could be replaced by sending
-> metrics
-
 To some extent we can't get away from categorizing exceptions. It's just part of
 the job. However we CAN avoid spuriously waking somebody up. Tributary now
 follows these guidelines for monitoring:
