@@ -125,14 +125,14 @@ follows these guidelines for monitoring:
 
 1. Use sentry.io
     
-  Sentry is an error aggregation service that does black magic to aggregate
-  errors and only notify you of new ones. It's a lifesaver in a situation like
-  this, because it makes us aware of what's going wrong without waking anybody
-  up or flooding your logging system with noise. You can set it up to send you
-  an email when it encounters a new exception, which makes the process of
-  deploying and then fixing whatever bugs result much more relaxing than when
-  you get around 200 pages each for the same exception, or at looking at logs
-  suddenly full of error traces.
+   Sentry is an error aggregation service that does black magic to aggregate
+   errors and only notify you of new ones. It's a lifesaver in a situation like
+   this, because it makes us aware of what's going wrong without waking anybody
+   up or flooding your logging system with noise. You can set it up to send you
+   an email when it encounters a new exception, which makes the process of
+   deploying and then fixing whatever bugs result much more relaxing than when
+   you get around 200 pages each for the same exception, or at looking at logs
+   suddenly full of error traces.
 
 2. We don't really have a problem unless a lot of services are experiencing a
    problem
