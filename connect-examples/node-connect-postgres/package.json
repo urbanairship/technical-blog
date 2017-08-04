@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: there are no tests\" && exit 1",
     "user": "createuser -h $PGHOST -p $PGPORT -D -R urban_airship_connect",
-    "schema": "cat ./schema.sql && psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER --file schema.sql",
+    "schema": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER --file schema.sql",
     "connect": "psql --dbname urban_airship_connect --host $PGHOST --port $PGPORT -U $PGUSER",
     "start": "node index.js | pino",
     "init": "npm run schema && npm run start",
