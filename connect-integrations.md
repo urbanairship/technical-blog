@@ -7,11 +7,12 @@
 > water out into an ocean.
 
 Urban Airship Connect is a streaming HTTP API which provides near-real-time
-mobile event data. The goal of the project is to give customers access to 
-the data we collect on their behalf. However, many customers don't want to
-spend the resources on a bespoke pipeline from our API to their analytics 
-engine. Enter Tributary, which takes the stream of data into the ocean of third
-party analytics and data storage tools.
+mobile event data. The goal of the project is to give customers access to the 
+user-level data that we collect on their behalf and enrich with additional
+information. However, many customers don't want to spend the resources on a
+bespoke pipeline from our API to their analytics engine. Enter Tributary, which
+takes the stream of data into the ocean of third-party  analytics, data storage,
+and marketing tools.
 
 ## Overview
 
@@ -26,12 +27,24 @@ inside the docker container from ever doing any work, but it does mean that you
 can just shutdown the process in case of exception, and be confident that it
 will get started back up again. 
 
-Using ECS has other consequences as well. Namely, logs and metrics need to be
-exported from your docker container in a fashion that will work consistently
-across the cluster. We push logs and metrics into an AWS Kinesis queue. AWS
-Lambdas subscribe to these queues to transform and insert logs and metrics data
-into Influx DB for visualization, Elastic Search for convenient access, and AWS
-Kinesis Firehose for long term storage.
+ECS is a great fit for this application because it means we can represent each
+integration as one or more processes (we could set the service up to start
+multiple tasks if needed), each of which can start/stop as needed. We don't need
+to shut down on each exception, but if we do it's not a big deal-- we just start
+up again from the last offset for which we uploaded data. This is a nice way to
+write software-- if we need to move to different nodes or deploy the system, we
+can do so without fear, since restarts happen all the time anyway. It also means
+we can scale arbitrarily. A single JVM can do a ton of work, but because of our
+environment, if we ever had a customer large enough to require more,
+implementing a sharding strategy that split consumption among a number of nodes
+is straightforward.
+
+Using ECS does introduce some complications as well. For example, logs and
+metrics need to be exported from your docker container in a fashion that will
+work consistently across the cluster. We push logs and metrics into an AWS
+Kinesis queue. AWS Lambdas subscribe to these queues to transform and insert
+logs and metrics data into Influx DB for visualization, Elastic Search for
+convenient access, and AWS Kinesis Firehose for long term storage.
 
 It's architecture diagram looks something like this:
 
@@ -184,3 +197,19 @@ The goal is to never page unless the problem is real, but also to make sure we
 know when something is wrong. I think this balance does that-- intermittent
 issues are surfaced by sentry, on a timeline that is convenient for the
 developer. Major issues are surfaced immediately by our system level alerting.
+
+## Conclusion
+
+Tributary is an interesting system. The pattern of starting and stopping a
+process in response to a customer's request is a new pattern at Urban Airship.
+Historically, we've run a number of JVM's which consume a work queue, which
+contains work items for a large set of customers. The process of maintaining,
+and getting woken up by tributary has taught us a lot about this alternative
+architecture. It has largely been a lesson in the value of keeping your system
+laconic-- alert too much means the engineer on-call simply ignores the
+alerts, since they don't actually indicate that anything is wrong. Keeping this
+system sufficiently laconic turned out to require a database for the state of
+the system, and sentry for exception aggregation (which itself requires a
+database). What we really want to do is report on the state of the system as a
+whole, but also catch and handle new exceptions that might indicate real
+problems, or which simply indicate we need to contact the customer. 
